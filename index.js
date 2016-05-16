@@ -26,10 +26,23 @@ request.get(
     }
   },
   function(error, response, body){
-    let pullRequests = JSON.parse(body);
-    _.each(pullRequests,function(pullRequest){
-      console.log(pullRequest.number);
-    })
+    let data = JSON.parse(body);
+    let pullRequests = _
+      .chain(data)
+      .map((pullRequest)=>{
+        return _.pick(pullRequest, 'milestone', 'assignee', 'html_url', 'title');
+      })
+      .map((pullRequest)=>{
+        if (pullRequest.milestone) {
+          pullRequest.milestone = pullRequest.milestone.title
+        }
+        if (pullRequest.assignee) {
+          pullRequest.assignee = pullRequest.milestone.login
+        }
+        return pullRequest;
+      })
+      .value();
+    console.log(pullRequests);
   }
 );
 
