@@ -1,28 +1,35 @@
 #!/usr/local/bin/node
-"use strict";
+'use strict';
 let request = require('request');
+let _ = require('lodash');
 let config = require('./config.json');
 
 let user = config.user;
 let token = config.token;
 
-const owner = "stepcase";
-const repo = "lifehack-core";
+const owner = 'stepcase';
+const repo = 'lifehack-core';
 
 
-let url = "https://"+user+":"+token+"@api.github.com/repos/" + owner + "/" + repo + "/pulls";
+let url = 'https://api.github.com/repos/' + owner + '/' + repo + '/pulls';
 console.log(url);
 request.get(
   {
-    "url" : url,
-    "headers" : {
-      "User-Agent" : "Bitbar-Pull-Request"
+    'url' : url,
+    'headers' : {
+      'User-Agent' : 'Bitbar-Pull-Request'
+    },
+    'auth' : {
+      'user' : config.user,
+      'pass' : config.token,
+      'sendImmediately': true
     }
   },
   function(error, response, body){
-    console.log(error);
-    // console.log(response);
-    console.log(body);
+    let pullRequests = JSON.parse(body);
+    _.each(pullRequests,function(pullRequest){
+      console.log(pullRequest.number);
+    })
   }
 );
 
