@@ -1,0 +1,14 @@
+{
+  "name": "bitbar-pull-request",
+  "version": "1.0.0",
+  "description": "A bitbar plugin to view pull request on github",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.72.0"
+  }
+}
