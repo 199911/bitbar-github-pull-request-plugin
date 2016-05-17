@@ -31,28 +31,30 @@ request.get(
       .map( (pullRequest) => _.pick(pullRequest, 'milestone', 'assignee', 'html_url', 'title') )
       .map( (pullRequest) => {
         if (pullRequest.milestone) {
-          pullRequest.milestone = pullRequest.milestone.title
+          pullRequest.milestone = pullRequest.milestone.title;
         }
         if (pullRequest.assignee) {
-          pullRequest.assignee = pullRequest.assignee.login
+          pullRequest.assignee = pullRequest.assignee.login;
         }
         return pullRequest;
       })
       .groupBy('milestone')
       .value();
 
-    console.log('hi');
-    console.log('---');
     _
       .chain(milestoneGroups)
       .keys()
       .sort()
-      .each( (milestone) => { 
+      .each( function (milestone) { 
         console.log(milestone);
-        _.each(milestoneGroups[milestone], (pullRequest) => {
-          console.log(pullRequest.title + ' | href=' + pullRequest.html_url);
-        })
-      } )
+        _
+          .chain(milestoneGroups[milestone])
+          .filter((pullRequest) => { pullRequest.assignee == user })
+          .each((pullRequest) => {
+            console.log(pullRequest.title + ' | href=' + pullRequest.html_url);
+          })
+          .value();
+      })
       .value();
     process.exit(0);
   }
