@@ -28,13 +28,16 @@ request.get(
     let data = JSON.parse(body);
     let milestoneGroups = _
       .chain(data)
-      .map( (pullRequest) => _.pick(pullRequest, 'milestone', 'assignee', 'html_url', 'title') )
+      .map( (pullRequest) => _.pick(pullRequest, 'milestone', 'assignee', 'user', 'html_url', 'title') )
       .map( (pullRequest) => {
         if (pullRequest.milestone) {
           pullRequest.milestone = pullRequest.milestone.title;
         }
         if (pullRequest.assignee) {
           pullRequest.assignee = pullRequest.assignee.login;
+        }
+        if (pullRequest.user) {
+          pullRequest.user = pullRequest.user.login;
         }
         return pullRequest;
       })
@@ -49,10 +52,8 @@ request.get(
         console.log(milestone);
         _
           .chain(milestoneGroups[milestone])
-          .filter((pullRequest) => { pullRequest.assignee == user })
-          .each((pullRequest) => {
-            console.log(pullRequest.title + ' | href=' + pullRequest.html_url);
-          })
+          .filter((pullRequest) => pullRequest.assignee == user || pullRequest.user == user)
+          .each((pullRequest) => console.log(pullRequest.title + ' | href=' + pullRequest.html_url))
           .value();
       })
       .value();
