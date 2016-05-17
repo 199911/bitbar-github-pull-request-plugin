@@ -26,7 +26,8 @@ request.get(
   function(error, response, body){
 
     let data = JSON.parse(body);
-    let milestoneGroups = _
+    // Groups of pull request with asignee or aurthor is user by milestone
+    let groups = _
       .chain(data)
       .map( (pullRequest) => _.pick(pullRequest, 'milestone', 'assignee', 'user', 'html_url', 'title') )
       .map( (pullRequest) => {
@@ -41,17 +42,18 @@ request.get(
         }
         return pullRequest;
       })
+      .filter((pullRequest) => pullRequest.assignee == user || pullRequest.user == user)
       .groupBy('milestone')
       .value();
 
     _
-      .chain(milestoneGroups)
+      .chain(groups)
       .keys()
       .sort()
       .each( function (milestone) { 
         console.log(milestone);
         _
-          .chain(milestoneGroups[milestone])
+          .chain(groups[milestone])
           .filter((pullRequest) => pullRequest.assignee == user || pullRequest.user == user)
           .each((pullRequest) => console.log(pullRequest.title + ' | href=' + pullRequest.html_url))
           .value();
