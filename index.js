@@ -45,19 +45,11 @@ request.get(
       .filter((pullRequest) => pullRequest.assignee == user || pullRequest.user == user)
       .groupBy('milestone')
       .value();
-
-    _
+    let sortedGroups = _
       .chain(groups)
       .keys()
       .sort()
-      .each( function (milestone) { 
-        console.log(milestone);
-        _
-          .chain(groups[milestone])
-          .filter((pullRequest) => pullRequest.assignee == user || pullRequest.user == user)
-          .each((pullRequest) => console.log(pullRequest.title + ' | href=' + pullRequest.html_url))
-          .value();
-      })
+      .map((milestone) => _.pick(groups, milestone))
       .value();
     process.exit(0);
   }
