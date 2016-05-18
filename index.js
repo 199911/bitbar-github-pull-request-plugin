@@ -9,10 +9,10 @@ let token = config.token;
 const owner = 'stepcase';
 const repo = 'lifehack-core';
 
-
 let url = 'https://api.github.com/repos/' + owner + '/' + repo + '/pulls';
-request.get(
+request(
   {
+    'method' : 'GET',
     'url' : url,
     'headers' : {
       'User-Agent' : 'Bitbar-Pull-Request'
