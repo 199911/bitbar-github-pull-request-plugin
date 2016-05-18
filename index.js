@@ -45,7 +45,9 @@ let promises = _
 Promise
   .all(promises)
   .then(function(responses) { 
-    let model = _.map(responses, (response) => {
+    let model = _
+    .chain(responses)
+    .map((response) => {
       let groups = _
         .chain(response)
         .map( (pullRequest) => _.pick(pullRequest, 'milestone', 'assignee', 'user', 'html_url', 'title') )
@@ -70,6 +72,7 @@ Promise
         .sort()
         .map((milestone) => _.pick(groups, milestone))
         .value();
+      // Return formated pull requests of each repo
       return _
         .chain(sortedGroups)
         .map((group)=>{
@@ -87,6 +90,13 @@ Promise
         })
         .value();
     })
-    console.log(model);
+    .zipWith(repos, function(a,b){
+      return {
+        'repo' : b,
+        'pullRequests' : a
+      };
+    })
+    .value();
+    console.log(JSON.stringify(model, null, 4));
   })
   .catch((error) => {throw error});
