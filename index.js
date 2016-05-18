@@ -60,10 +60,10 @@ Promise
         // Return formated pull requests of each repo
         return groups
       })
-      .zipWith(repos, function(pullRequests,repo){
+      .zipWith(repos, function(milestones,repo){
         return {
           'repo' : repo,
-          'pullRequests' : pullRequests
+          'milestones' : milestones
         };
       })
       .value();
