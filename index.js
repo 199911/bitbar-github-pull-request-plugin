@@ -40,24 +40,8 @@ let getPullRequest = {
   }
 };
 
-let url = 'https://api.github.com/repos/' + owner + '/' + repo + '/pulls';
-request(
-  {
-    'method' : 'GET',
-    'url' : url,
-    'headers' : {
-      'User-Agent' : 'Bitbar-Pull-Request'
-    },
-    'auth' : {
-      'user' : config.user,
-      'pass' : config.token,
-      'sendImmediately': true
-    }
-  },
-  function(error, response, body){
-
-    let data = JSON.parse(body);
-    // Groups of pull request with asignee or aurthor is user by milestone
+requestAsync(getPullRequest)
+  .then((data) => {
     let groups = _
       .chain(data)
       .map( (pullRequest) => _.pick(pullRequest, 'milestone', 'assignee', 'user', 'html_url', 'title') )
@@ -107,6 +91,5 @@ request(
       .join('\n')
       .value();
     console.log(string);
-    process.exit(0);
-  }
-);
+  })
+  .catch((error) => console.log(error));
