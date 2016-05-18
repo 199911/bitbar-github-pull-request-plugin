@@ -51,6 +51,31 @@ request.get(
       .sort()
       .map((milestone) => _.pick(groups, milestone))
       .value();
+    // to strings
+    var string = _
+      .chain(sortedGroups)
+      .map((group)=>{
+        let pair = [
+          _.keys(group),
+          _
+            .chain(group)
+            .map((pullRequests)=>{
+              return _
+                .chain(pullRequests)
+                .map((pullRequest)=>{
+                  return pullRequest.title + ' | href=' + pullRequest.html_url;
+                })
+                .value();
+            })
+            .join('\n')
+            .value()
+        ];
+        return pair;
+      })
+      .flatten()
+      .join('\n')
+      .value();
+    console.log(string);
     process.exit(0);
   }
 );
