@@ -70,4 +70,38 @@ Promise
     return model;
   })
   .catch((error) => {throw error})
-  .then((result) => {console.log(result);})
+  .then((repos) => {
+    // print header
+    _
+      .chain(repos)
+      .each((repo) => {
+        let repoCount = _
+          .chain(repo.milestones)
+          .map('pullRequests')
+          .map('length')
+          .sum()
+          .value();
+        console.log(repo.repo + '(' + repoCount + ')');
+      })
+      .value();
+
+    console.log('---');
+
+    // print pull request for each repo
+    _
+      .chain(repos)
+      .each((repo) => {
+        console.log(repo['repo'] + ' | color=blue');
+        _
+          .chain(repo.milestones)
+          .each((milestone) => {
+            console.log(milestone.milestone + ' | color=green');
+            _.each(milestone.pullRequests, (pullRequest) => {
+              console.log(pullRequest.title + ' ('+pullRequest.user+'->'+pullRequest.assignee+') | href=' + pullRequest.html_url);
+            })
+          })
+          .value();
+        console.log('---');
+      })
+      .value();
+  });
