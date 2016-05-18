@@ -1,29 +1,11 @@
 'use strict';
-let request = require('request');
+let requestAsync = require('./requestAsync');
 let _ = require('lodash');
 let config = require('./config.json');
 
 let user = config.user;
 let token = config.token;
 let repos = config.repos;
-
-function requestAsync(settings){
-  return new Promise((resolve, reject) => {
-    request(settings, (error, response, body) => {
-      if (error) {
-        reject(error);
-      }
-      let data = JSON.parse(body);
-      if (response.statusCode != 200) {
-        reject({
-          'error' : response.statusCode,
-          'response' : data
-        });
-      }
-      resolve(data);
-    });
-  });
-}
 
 let promises = _
   .map(repos, (repo) => {
