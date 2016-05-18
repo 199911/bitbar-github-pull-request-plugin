@@ -46,57 +46,46 @@ Promise
   .all(promises)
   .then(function(responses) { 
     let model = _
-    .chain(responses)
-    .map((response) => {
-      let groups = _
-        .chain(response)
-        .map( (pullRequest) => _.pick(pullRequest, 'milestone', 'assignee', 'user', 'html_url', 'title') )
-        .map( (pullRequest) => {
-          if (pullRequest.milestone) {
-            pullRequest.milestone = pullRequest.milestone.title;
-          }
-          if (pullRequest.assignee) {
-            pullRequest.assignee = pullRequest.assignee.login;
-          }
-          if (pullRequest.user) {
-            pullRequest.user = pullRequest.user.login;
-          }
-          return pullRequest;
-        })
-        .filter((pullRequest) => pullRequest.assignee == user || pullRequest.user == user)
-        .groupBy('milestone')
-        .value();
-      let sortedGroups = _
-        .chain(groups)
-        .keys()
-        .sort()
-        .map((milestone) => _.pick(groups, milestone))
-        .value();
-      // Return formated pull requests of each repo
-      return _
-        .chain(sortedGroups)
-        .map((group)=>{
-          return {
-            'milestone' : _.keys(group),
-            'pullRequests' : _.map(group, (pullRequests)=>{
-              return _
-                .chain(pullRequests)
-                .map((pullRequest)=>{
-                  return pullRequest.title + ' | href=' + pullRequest.html_url;
-                })
-                .value();
-            })
-          };
-        })
-        .value();
-    })
-    .zipWith(repos, function(a,b){
-      return {
-        'repo' : b,
-        'pullRequests' : a
-      };
-    })
-    .value();
-    console.log(JSON.stringify(model, null, 4));
+      .chain(responses)
+      .map((response) => {
+        let groups = _
+          .chain(response)
+          .map( (pullRequest) => _.pick(pullRequest, 'milestone', 'assignee', 'user', 'html_url', 'title') )
+          .map( (pullRequest) => {
+            if (pullRequest.milestone) {
+              pullRequest.milestone = pullRequest.milestone.title;
+            }
+            if (pullRequest.assignee) {
+              pullRequest.assignee = pullRequest.assignee.login;
+            }
+            if (pullRequest.user) {
+              pullRequest.user = pullRequest.user.login;
+            }
+            return pullRequest;
+          })
+          .filter((pullRequest) => pullRequest.assignee == user || pullRequest.user == user)
+          .groupBy('milestone')
+          .thru((groups) => {
+            return _.zipWith(_.keys(groups), _.values(groups), (milestone, pullRequests) => {
+              return {
+                'milestone' : milestone,
+                'pullRequests' : pullRequests
+              }
+            });
+          })
+          .sortBy('milestone')
+          .value();
+        // Return formated pull requests of each repo
+        return groups
+      })
+      .zipWith(repos, function(pullRequests,repo){
+        return {
+          'repo' : repo,
+          'pullRequests' : pullRequests
+        };
+      })
+      .value();
+    return model;
   })
-  .catch((error) => {throw error});
+  .catch((error) => {throw error})
+  .then((result) => {console.log(result);})
