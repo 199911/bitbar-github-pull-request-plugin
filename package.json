@@ -1,12 +1,12 @@
 {
-  "name": "bitbar-pull-request",
+  "name": "bitbar-github-pull-request-plugin",
   "version": "1.0.0",
-  "description": "A bitbar plugin to view pull request on github",
+  "description": "A bitbar plugin to view pull requests on github",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "199911",
   "license": "MIT",
   "dependencies": {
     "lodash": "^4.12.0",
