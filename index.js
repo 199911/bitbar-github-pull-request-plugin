@@ -9,6 +9,34 @@ let token = config.token;
 const owner = 'stepcase';
 const repo = 'lifehack-core';
 
+function requestAsync(settings){
+  return new Promise((resolve, reject) => {
+    request(settings, (error, response, body) => {
+      if (error) {
+        reject({
+          'error' : error,
+          'response' : response
+        });
+      } else {
+        resolve(JSON.parse(body));
+      }
+    });
+  });
+}
+
+let getPullRequest = {
+  'method' : 'GET',
+  'url' : 'https://api.github.com/repos/' + owner + '/' + repo + '/pulls',
+  'headers' : {
+    'User-Agent' : 'Bitbar-Pull-Request'
+  },
+  'auth' : {
+    'user' : config.user,
+    'pass' : config.token,
+    'sendImmediately': true
+  }
+};
+
 let url = 'https://api.github.com/repos/' + owner + '/' + repo + '/pulls';
 request(
   {
