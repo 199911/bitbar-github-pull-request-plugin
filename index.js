@@ -26,7 +26,7 @@ let promises = _
 
 Promise
   .all(promises)
-  .then(function(responses) { 
+  .then(function(responses) {
     let model = _
       .chain(responses)
       .map((response) => {
@@ -81,7 +81,7 @@ Promise
           .map('length')
           .sum()
           .value();
-        console.log(repo.repo + '(' + repoCount + ')');
+        console.log(repo['repo'] + '(' + repoCount + `) | href=https://github.com/${repo['repo']}/pulls`);
       })
       .value();
 
@@ -91,7 +91,7 @@ Promise
     _
       .chain(repos)
       .each((repo) => {
-        console.log(repo['repo'] + ' | color=blue');
+        console.log(repo['repo'] + ' | color=blue  | href=https://github.com/' + repo['repo']);
         _
           .chain(repo.milestones)
           .each((milestone) => {
