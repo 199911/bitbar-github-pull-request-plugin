@@ -1,3 +1,5 @@
+#!/usr/local/bin/node
+
 'use strict';
 let requestAsync = require('./requestAsync');
 let _ = require('lodash');
