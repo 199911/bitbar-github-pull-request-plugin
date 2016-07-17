@@ -45,7 +45,7 @@ Promise
             }
             return pullRequest;
           })
-          .filter((pullRequest) => pullRequest.assignee == user || pullRequest.user == user)
+          .filter(config.filter.bind(config))
           .groupBy('milestone')
           .thru((groups) => {
             return _.zipWith(_.keys(groups), _.values(groups), (milestone, pullRequests) => {
