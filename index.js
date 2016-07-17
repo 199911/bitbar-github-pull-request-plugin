@@ -11,7 +11,7 @@ let promises = _
   .map(repos, (repo) => {
     return requestAsync({
       'method' : 'GET',
-      'url' : 'https://api.github.com/repos/' + repo + '/pulls',
+      'url' : `https://api.github.com/repos/${repo}/pulls`,
       'headers' : {
         'User-Agent' : 'Bitbar-Github-Pull-Request-Plugin'
       },
@@ -81,7 +81,7 @@ Promise
           .map('length')
           .sum()
           .value();
-        console.log(repo['repo'] + '(' + repoCount + `) | href=https://github.com/${repo['repo']}/pulls`);
+        console.log(`${repo['repo']}(${repoCount}) | color=green | href=https://github.com/${repo['repo']}`);
       })
       .value();
 
@@ -91,11 +91,11 @@ Promise
     _
       .chain(repos)
       .each((repo) => {
-        console.log(repo['repo'] + ' | color=blue  | href=https://github.com/' + repo['repo']);
+        console.log(`${repo['repo']} | color=blue  | href=https://github.com/${repo['repo']}/pulls`);
         _
           .chain(repo.milestones)
           .each((milestone) => {
-            console.log(milestone.milestone + ' | color=green');
+            console.log(milestone.milestone + ' | color=red');
             _.each(milestone.pullRequests, (pullRequest) => {
               console.log(pullRequest.title + ' ('+pullRequest.user+'->'+pullRequest.assignee+') | href=' + pullRequest.html_url);
             })
