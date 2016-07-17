@@ -1,7 +1,7 @@
 'use strict';
 let requestAsync = require('./requestAsync');
 let _ = require('lodash');
-let config = require('./config.json');
+let config = require('./config');
 
 let user = config.user;
 let token = config.token;
