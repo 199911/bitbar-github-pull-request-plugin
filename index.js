@@ -32,6 +32,7 @@ Promise
       .map((response) => {
         let groups = _
           .chain(response)
+          .filter(config.filter.bind(config))
           .map( (pullRequest) => _.pick(pullRequest, 'milestone', 'assignee', 'user', 'html_url', 'title') )
           .map( (pullRequest) => {
             if (pullRequest.milestone) {
@@ -45,7 +46,6 @@ Promise
             }
             return pullRequest;
           })
-          .filter(config.filter.bind(config))
           .groupBy('milestone')
           .thru((groups) => {
             return _.zipWith(_.keys(groups), _.values(groups), (milestone, pullRequests) => {
